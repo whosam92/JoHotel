@@ -1,1 +1,2 @@
 *integration*.txt    //to ignore all integration test files
+.env //to ignore environment variables file
