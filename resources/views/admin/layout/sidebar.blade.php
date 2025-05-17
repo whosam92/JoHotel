@@ -12,11 +12,11 @@
             <li class="{{ Request::is('admin/home') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin_home') }}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
 
             {{-- <li class="{{ Request::is('admin/setting') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin_setting') }}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Setting"><i class="fa fa-cog"></i> <span>Setting</span></a></li> --}}
-            <li class="{{ Request::is('admin/hotels') ? 'active' : '' }}">
+            {{-- <li class="{{ Request::is('admin/hotels') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.hotel_view') }}">
                     <i class="fa fa-hotel"></i> Hotels
                 </a>
-            </li> 
+            </li>  --}}
               
             
             

@@ -14,20 +14,29 @@ class AdminOrderController extends Controller
         $customers = Customer::all(); 
         $orders = Order::get();  
         
-        return view('admin.orders', compact('orders', 'customers'));
+    return view('admin.orders', compact('orders', 'customers'));
+    }
+
+    // Separate method for fetching all customers
+    private function getAllCustomers()
+    {
+        return Customer::all();
     }
     
+
+
+
     public function invoice($id)
     {
         $order = Order::with('orderDetails')->where('id', $id)->first();
-        
-        if (!$order || $order->orderDetails->isEmpty()) {
-            return redirect()->back()->with('error', 'No details found for this order!');
-        }
     
-        $customer_data = Customer::where('id', $order->customer_id)->first();
-    
-        return view('admin.invoice', compact('order', 'customer_data'));
+    if (!$order || $order->orderDetails->isEmpty()) {
+        return redirect()->back()->with('error', 'No details found for this order!');
+    }
+
+    $customer_data = Customer::where('id', $order->customer_id)->first();
+
+    return view('admin.invoice', compact('order', 'customer_data'));
     }
 
 

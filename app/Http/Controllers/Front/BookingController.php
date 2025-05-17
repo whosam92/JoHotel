@@ -25,81 +25,74 @@ use App\Models\Coupon; // Add this at the top
 class BookingController extends Controller
 {
     
-    public function cart_submit(Request $request)
-    {
-        // Validate request
-        $request->validate([
-            'room_id' => 'required',
-            'checkin_checkout' => 'required',
-            'adult' => 'required'
-        ]);
-    
-        // Extract check-in and check-out dates
-        $dates = explode(' - ', $request->checkin_checkout);
-        $checkin_date = $dates[0]; // Format: "d/m/Y"
-        $checkout_date = $dates[1]; // Format: "d/m/Y"
-    
-        // Convert to "Y-m-d" format for better date comparison
-        $d1 = explode('/', $checkin_date);
-        $d2 = explode('/', $checkout_date);
-        $d1_new = $d1[2] . '-' . $d1[1] . '-' . $d1[0]; // Check-in converted
-        $d2_new = $d2[2] . '-' . $d2[1] . '-' . $d2[0]; // Check-out converted
-        $t1 = strtotime($d1_new);
-        $t2 = strtotime($d2_new);
-    
-        // 🔹 Prevent duplicate room bookings for the same dates
-        $cart_rooms = session('cart_room_id', []);
-        $cart_checkin_dates = session('cart_checkin_date', []);
-        $cart_checkout_dates = session('cart_checkout_date', []);
-    
-        foreach ($cart_rooms as $index => $cart_room_id) {
-            if ($cart_room_id == $request->room_id) {
-                $existing_checkin = strtotime(str_replace('/', '-', $cart_checkin_dates[$index]));
-                $existing_checkout = strtotime(str_replace('/', '-', $cart_checkout_dates[$index]));
-    
-                // Check if the new date range overlaps with an existing one in the cart
-                if (($t1 >= $existing_checkin && $t1 < $existing_checkout) || 
-                    ($t2 > $existing_checkin && $t2 <= $existing_checkout) || 
-                    ($t1 <= $existing_checkin && $t2 >= $existing_checkout)) {
-                    return redirect()->back()->with('error', 'You have already added this room for the selected dates in your cart.');
-                }
-            }
-        }
-    
-        // 🔹 Check if the room is fully booked
-        $cnt = 1;
-        while (true) {
-            if ($t1 >= $t2) {
-                break;
-            }
-            $single_date = date('d/m/Y', $t1);
-            $total_already_booked_rooms = BookedRoom::where('booking_date', $single_date)
-                ->where('room_id', $request->room_id)
-                ->count();
-    
-            $room_data = Room::where('id', $request->room_id)->first();
-            $total_allowed_rooms = $room_data->total_rooms;
-    
-            if ($total_already_booked_rooms == $total_allowed_rooms) {
-                $cnt = 0;
-                break;
-            }
-            $t1 = strtotime('+1 day', $t1);
-        }
-    
-        if ($cnt == 0) {
-            return redirect()->back()->with('error', 'This room is already fully booked for the selected dates.');
-        }
-    
-        // 🔹 Add room details to session
-        session()->push('cart_room_id', $request->room_id);
-        session()->push('cart_checkin_date', $checkin_date);
-        session()->push('cart_checkout_date', $checkout_date);
-        session()->push('cart_adult', $request->adult);
-        session()->push('cart_children', $request->children ?? 0);
-    
-        return redirect()->back()->with('success', 'Room added to cart successfully.');
+   public function cart_submit(Request $request)
+{
+    // Validate request
+    $request->validate([
+        'room_id' => 'required',
+        'checkin_checkout' => 'required',
+        'adult' => 'required'
+    ]);
+
+    // Extract check-in and check-out dates
+    $dates = explode(' - ', $request->checkin_checkout);
+    $checkin_date = $dates[0]; // Format: "d/m/Y"
+    $checkout_date = $dates[1]; // Format: "d/m/Y"
+
+    // Convert to "Y-m-d" format for better date comparison
+    $d1 = \Carbon\Carbon::createFromFormat('d/m/Y', $checkin_date);
+    $d2 = \Carbon\Carbon::createFromFormat('d/m/Y', $checkout_date);
+
+    $roomId = $request->room_id;
+
+    //  Improved Booking Conflict Check:
+    $conflictingBookings = BookedRoom::where('room_id', $roomId)
+        ->where(function ($query) use ($d1, $d2) {
+            $query->whereBetween('booking_date', [$d1->format('d/m/Y'), $d2->format('d/m/Y')])
+                ->orWhere(function ($q) use ($d1, $d2) {
+                    $q->where('booking_date', '<=', $d1->format('d/m/Y'))
+                      ->where('booking_date', '>=', $d2->format('d/m/Y'));
+                });
+        })
+        ->exists();
+
+    if ($conflictingBookings) {
+        return redirect()->back()->with('error', 'This room is already booked for the selected dates.');
     }
+
+    //   added Logic: Prevent duplicate entries in the cart for the same user with the same date range
+    $cart_rooms = session('cart_room_id', []);
+    $cart_checkin_dates = session('cart_checkin_date', []);
+    $cart_checkout_dates = session('cart_checkout_date', []);
+
+    foreach ($cart_rooms as $index => $cart_room_id) {
+        if ($cart_room_id == $roomId) {
+            $existing_checkin = \Carbon\Carbon::createFromFormat('d/m/Y', $cart_checkin_dates[$index]);
+            $existing_checkout = \Carbon\Carbon::createFromFormat('d/m/Y', $cart_checkout_dates[$index]);
+
+            // Check if the new date range overlaps with an existing one in the cart
+            if (
+                ($d1 >= $existing_checkin && $d1 < $existing_checkout) ||
+                ($d2 > $existing_checkin && $d2 <= $existing_checkout) ||
+                ($d1 <= $existing_checkin && $d2 >= $existing_checkout)
+            ) {
+                return redirect()->back()->with('error', 'You have already added this room for the selected dates in your cart.');
+            }
+        }
+    }
+
+    // Add room details to session
+    session()->push('cart_room_id', $roomId);
+    session()->push('cart_checkin_date', $checkin_date);
+    session()->push('cart_checkout_date', $checkout_date);
+    session()->push('cart_adult', $request->adult);
+    session()->push('cart_children', $request->children ?? 0);
+
+    return redirect()->back()->with('success', 'Room added to cart successfully.');
+}
+
+
+
     
     public function cart_view()
 {
@@ -266,6 +259,22 @@ public function checkout_submit(Request $request)
     return redirect()->route('payment');
 }
 
+//--------------------------------------------------------
+
+//Method to Fetch Booked Dates to use in calender 
+
+public function getBookedDates(Request $request)
+{
+    $request->validate([
+        'room_id' => 'required|integer'
+    ]);
+
+    $bookedDates = BookedRoom::where('room_id', $request->room_id)
+        ->pluck('booking_date')
+        ->toArray();
+
+    return response()->json(['booked_dates' => $bookedDates]);
+}
 
 
 

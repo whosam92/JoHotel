@@ -7,26 +7,23 @@
                 </ul>
             </form>
             <ul class="navbar-nav navbar-right btn-block justify-content-end">
-                <li class="nav-link">
-                    <a href="{{ route('home') }}" class="btn btn-warning">Home Page</a>
-                </li>
-                <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                    
-                    @if(Auth::guard('customer')->user()->photo == '')
-                    <img alt="image" src="{{ asset('uploads/default.png') }}" class="rounded-circle mr-1">
-                    @else
-                    <img alt="image" src="{{ asset('uploads/'.Auth::guard('customer')->user()->photo) }}" class="rounded-circle mr-1">
-                    @endif
+    <li class="nav-link" style="margin-right: 20px;">
+        <a href="{{ route('home') }}" class="btn btn-warning">Home Page</a>
+    </li>
+    <li class="dropdown position-relative" style="position: relative;">
+        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user" style="position: relative; padding-right: 20px;">
+            <div class="d-sm-none d-lg-inline-block">{{ Auth::guard('customer')->user()->name }}</div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" 
+             style="right: 15px; left: auto; min-width: 150px; max-width: 220px; overflow-wrap: break-word; overflow: hidden; z-index: 1050; position: absolute; top: 100%; transform: translateX(-10%);">
+            <a href="{{ route('customer_profile') }}" class="dropdown-item has-icon" style="white-space: nowrap; padding: 10px;">
+                <i class="fa fa-user"></i> Edit Profile
+            </a>
+            <a href="{{ route('customer_logout') }}" class="dropdown-item has-icon text-danger" style="white-space: nowrap; padding: 10px;">
+                <i class="fa fa-sign-out"></i> Logout
+            </a>
+        </div>
+    </li>
+</ul>
 
-                    <div class="d-sm-none d-lg-inline-block">{{ Auth::guard('customer')->user()->name }}</div></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a href="{{ route('customer_profile') }}" class="dropdown-item has-icon">
-                            <i class="fa fa-user"></i> Edit Profile
-                        </a>
-                        <a href="{{ route('customer_logout') }}" class="dropdown-item has-icon text-danger">
-                            <i class="fa fa-sign-out"></i> Logout
-                        </a>
-                    </div>
-                </li>
-            </ul>
         </nav>

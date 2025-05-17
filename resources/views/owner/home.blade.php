@@ -95,9 +95,12 @@
                                             <td>{{ $order->id }}</td>
                                             <td>{{ $order->orderDetails->first()->room->hotel->name ?? 'N/A' }}</td>
                                             <td>
-                                                @foreach($order->orderDetails as $detail)
-                                                    {{ $detail->room->name }}<br>
-                                                @endforeach
+                                               <td>
+    @foreach($order->orderDetails as $detail)
+        {{ $detail->room->name ?? 'Room Not Found' }}<br>
+    @endforeach
+</td>
+
                                             </td>
                                             <td>{{ $order->orderDetails->first()->checkin_date ?? 'N/A' }}</td>
                                             <td>{{ $order->orderDetails->first()->checkout_date ?? 'N/A' }}</td>

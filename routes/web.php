@@ -470,3 +470,21 @@ Route::get('/coupons', [OwnerCouponController::class, 'index'])->name('owner.cou
 });
 
 
+// for fetching bokeed room data to the calendar
+Route::post('/get-booked-dates', [BookingController::class, 'getBookedDates'])->name('getBookedDates');
+
+
+
+
+
+
+// Admin Order Routes
+Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin_order_index');
+Route::get('/admin/orders/view/{id}', [AdminOrderController::class, 'view'])->name('admin_order_view');
+Route::get('/admin/orders/invoice/{id}', [AdminOrderController::class, 'invoice'])->name('admin_order_invoice');
+Route::get('/admin/orders/edit/{id}', [AdminOrderController::class, 'edit'])->name('admin_order_edit');
+Route::post('/admin/orders/update/{id}', [AdminOrderController::class, 'update'])->name('admin_order_update');
+Route::get('/admin/orders/delete/{id}', [AdminOrderController::class, 'delete'])->name('admin_order_delete');
+
+// Admin Orders Routes
+Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin_orders');

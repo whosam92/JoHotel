@@ -38,7 +38,6 @@
                     {!! $single_post_data->content !!}
                 </div>
                 <div class="share-content">
-                    <h2>Share</h2>
                     <div class="addthis_inline_share_toolbox"></div>
                 </div>
             </div>

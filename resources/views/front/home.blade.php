@@ -10,7 +10,6 @@
                 <p>
                     Find your next stay · Book now, top rooms for you!                </p>
                 <div class="button">
-                    <a href="{{ route('hotels.index') }}">OUR HOTELS</a>
                 </div>
             </div>
         </div>
@@ -19,10 +18,9 @@
             <div class="text">
                 <h2>Quality rooms for the guests</h2>
                 <p>
-                    Search low prices on hotels, homes and much more ... Book now!
+                    Search low prices room and much more ... Book now!
                 </p>
                 <div class="button">
-                    <a href="{{ route('hotels.index') }}">OUR HOTELS</a>
                 </div>
             </div>
         </div>
@@ -31,41 +29,53 @@
  
 <div class="search-section">
     <div class="container">
-        <form action="{{ route('cart_submit') }}" method="post">
-            @csrf
-            <div class="inner">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <select name="room_id" class="form-select">
-                                <option value="">Select Room</option>
-                                @foreach($room_all as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <input type="text" name="checkin_checkout" class="form-control daterange1" placeholder="Checkin & Checkout">
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <input type="number" name="adult" class="form-control" min="1" max="30" placeholder="Adults">
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <input type="number" name="children" class="form-control" min="0" max="30" placeholder="Children">
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <button type="submit" class="btn btn-primary">Book Now</button>
-                    </div>
+    <form action="{{ route('cart_submit') }}" method="post">
+    @csrf
+    <div class="inner">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <select name="room_id" class="form-select">
+                        <option value="">Select Room</option>
+                        @foreach($room_all as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
-        </form>
+           <div class="col-lg-3">
+    <div class="form-group">
+        <input type="text" name="checkin_checkout" class="form-control daterange1" placeholder="Checkin & Checkout" required>
+    </div>
+</div>
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <select name="adult" class="form-select" required>
+                        <option value="">Adults</option>
+                        @for ($i = 1; $i <= 4; $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <select name="children" class="form-select">
+                        <option value="">Children</option>
+                        @for ($i = 1; $i <= 3; $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <button type="submit" class="btn btn-primary">Book Now</button>
+            </div>
+        </div>
+    </div>
+</form>
+
     </div>
 </div>
 
@@ -169,7 +179,7 @@
 
 
 @if($global_setting_data->home_room_status == 'Show')
-<div class="home-rooms">
+<div class="home-rooms"  id="#rooms-section">>
     <div class="container">
         <div class="row">
             <div class="col-md-12">

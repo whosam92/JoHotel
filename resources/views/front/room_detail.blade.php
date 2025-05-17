@@ -248,13 +248,25 @@
                                 <input type="text" name="checkin_checkout" class="form-control daterange1" placeholder="Checkin & Checkout">
                             </div>
                             <div class="form-group mb_20">
-                                <label for="">Adult</label>
-                                <input type="number" name="adult" class="form-control" min="1" max="30" placeholder="Adults">
-                            </div>
-                            <div class="form-group mb_20">
-                                <label for="">Children</label>
-                                <input type="number" name="children" class="form-control" min="0" max="30" placeholder="Children">
-                            </div>
+    <label for="">Adult</label>
+    <select name="adult" class="form-select" required>
+        <option value="">Select Adults</option>
+        @for ($i = 1; $i <= 4; $i++)
+            <option value="{{ $i }}">{{ $i }}</option>
+        @endfor
+    </select>
+</div>
+
+<div class="form-group mb_20">
+    <label for="">Children</label>
+    <select name="children" class="form-select">
+        <option value="">Select Children</option>
+        @for ($i = 1; $i <= 3; $i++)
+            <option value="{{ $i }}">{{ $i }}</option>
+        @endfor
+    </select>
+</div>
+
                             <button type="submit" class="book-now">Add to Cart</button>
                         </form>
                     </div>

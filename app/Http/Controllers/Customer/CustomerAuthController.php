@@ -13,7 +13,6 @@ use App\Models\Page; // Add this at the top
 
 class CustomerAuthController extends Controller
 {
-   
 
 public function login()
 {

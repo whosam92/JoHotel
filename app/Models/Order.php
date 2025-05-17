@@ -28,6 +28,7 @@ class Order extends Model
         'booking_date',
         'paid_amount',
         'customer_id',
+        'discount_amount', //added discount_amount to work on invoices 
     ];
 
     // An order belongs to a customer

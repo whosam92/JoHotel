@@ -11,6 +11,7 @@ use App\Models\BookedRoom;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+
 class RoomController extends Controller
 {
     /**
@@ -33,7 +34,7 @@ class RoomController extends Controller
         $single_room_data = Room::with([
             'rRoomPhoto',
             'reviews.customer',
-            'reviews.replies.admin' // ✅ Add this line to load replies and their admins
+            'reviews.replies.admin' //Add this line to load replies and their admins
         ])->where('id', $id)->firstOrFail();
         
 
@@ -62,7 +63,7 @@ class RoomController extends Controller
 
             // Fetch already booked dates for this room from completed orders
             $booked_dates = BookedRoom::where("room_id", $id)
-            ->join("orders", "booked_rooms.order_no", "=", "orders.order_no") // ✅ Corrected
+            ->join("orders", "booked_rooms.order_no", "=", "orders.order_no") //  Corrected
             ->where("orders.status", "Completed") // Only consider confirmed bookings
             ->pluck("booked_rooms.booking_date")
             ->toArray();
@@ -88,5 +89,19 @@ class RoomController extends Controller
         }
 
         return view('front.room_detail', compact('single_room_data', 'global_page_data', 'reviews', 'hasBooked', 'disabled_dates'));
+    }
+    /**
+     * Get booked dates for a specific room (AJAX endpoint).
+     */
+    public function getBookedDates(Request $request)
+    {
+        $roomId = $request->room_id;
+
+        // Fetch booked dates for the specific room
+        $bookedDates = BookedRoom::where('room_id', $roomId)
+            ->pluck('booking_date')
+            ->toArray();
+
+        return response()->json(['booked_dates' => $bookedDates]);
     }
 }

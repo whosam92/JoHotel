@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		
         <meta name="description" content="">
+        <meta name="csrf-token" content="{{ csrf_token() }}"> 
         <title>Hotel Website</title>        
 		
         <link rel="icon" type="image/png" href="{{ asset('uploads/'.$global_setting_data->favicon) }}">
@@ -24,7 +25,12 @@
             gtag('js', new Date());
             gtag('config', '{{ $global_setting_data->analytic_id }}');
         </script>
+<style>
+	.swal-custom-popup {
+    z-index: 9999 !important;
+}
 
+</style>
         <style>
             .main-nav nav .navbar-nav .nav-item a:hover,
             .main-nav nav .navbar-nav .nav-item:hover a,
@@ -76,6 +82,8 @@
             .cart .table-cart tr th {
                 background-color: {{ $global_setting_data->theme_color_2 }}!important;
             }
+         
+
         </style>
 
     </head>
@@ -164,9 +172,8 @@
                     </li>
                     @endif
 
-                    <!-- 🔹 Added Hotels to the Navbar -->
+                    <!--  in future to Add  Hotels to the Navbar -->
                     <li class="nav-item">
-                        <a href="{{ route('hotels.index') }}" class="nav-link">Hotels</a>
                     </li>
 
                     <li class="nav-item">
@@ -304,7 +311,7 @@
                                 @endif
 
                                 @if($global_setting_data->pinterest != '')
-                                <li><a href="{{ $global_setting_data->pinterest }}"><i class="fa fa-pinterest-p"></i></a></li>
+                                <li><a href="{{ $global_setting_data->pinterest }}"><i class="fa fa-github"></i></a></li>
                                 @endif
                                 
                             </ul>

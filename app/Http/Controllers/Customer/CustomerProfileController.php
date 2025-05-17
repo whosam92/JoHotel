@@ -44,22 +44,23 @@ class CustomerProfileController extends Controller
             $customer_data->password = Hash::make($request->password);
         }
 
-        if($request->hasFile('photo')) {
-            $request->validate([
-                'photo' => 'image|mimes:jpg,jpeg,png,gif'
-            ]);
+        if ($request->hasFile('photo')) {
+    $request->validate([
+        'photo' => 'image|mimes:jpg,jpeg,png,gif'
+    ]);
 
-            if (file_exists(public_path('uploads/' . $customer_data->photo))) {
-                unlink(public_path('uploads/' . $customer_data->photo));
-            }
-            
+    // Check if the old photo exists and is not a directory
+    if (!empty($customer_data->photo) && file_exists(public_path('uploads/' . $customer_data->photo)) && !is_dir(public_path('uploads/' . $customer_data->photo))) {
+        unlink(public_path('uploads/' . $customer_data->photo));
+    }
 
-            $ext = $request->file('photo')->extension();
-            $final_name = time().'.'.$ext;
-            $request->file('photo')->move(public_path('uploads/'),$final_name);
+    $ext = $request->file('photo')->extension();
+    $final_name = time().'.'.$ext;
+    $request->file('photo')->move(public_path('uploads/'), $final_name);
 
-            $customer_data->photo = $final_name;
-        }
+    $customer_data->photo = $final_name;
+}
+
 
         
         $customer_data->name = $request->name;

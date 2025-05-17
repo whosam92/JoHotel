@@ -11,7 +11,7 @@
                     <form action="{{ route('customer_profile_submit') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-3">
                                 @php
                                 if(Auth::guard('customer')->user()->photo != '') {
                                     $customer_photo = Auth::guard('customer')->user()->photo;
@@ -21,7 +21,7 @@
                                 @endphp
                                 <img src="{{ asset('uploads/'.$customer_photo) }}" alt="" class="profile-photo w_100_p">
                                 <input type="file" class="form-control mt_10" name="photo">
-                            </div>
+                            </div> --}}
                             <div class="col-md-9">
                                 <div class="row">
                                     <div class="col-md-6">
